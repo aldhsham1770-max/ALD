@@ -12,36 +12,69 @@
     display: flex; 
     flex-direction: column; 
     height: 100vh; 
-    background: linear-gradient(135deg, #1e222b 0%, #0f1115 100%); 
-    color: #e2e8f0;
+    background: linear-gradient(135deg, #120e16 0%, #070509 100%); /* ثيم بنفسجي داكن فخم */
+    color: #f1f5f9;
     overflow: hidden;
     position: relative;
   }
 
-  /* شريط التولبار العلوي - معزول ومحمي تماماً لقابلية الضغط الفورية */
+  /* شريط التولبار العلوي */
   .top-toolbar {
-    background: rgba(22, 26, 34, 0.9);
+    background: rgba(18, 14, 22, 0.9);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     padding: 14px 20px; 
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 25px rgba(0,0,0,0.6);
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(155, 89, 182, 0.15); /* إضاءة بنفسجية خفيفة للحدود */
     flex-shrink: 0;
     position: relative;
-    z-index: 99999 !important; /* قيمة قصوى لضمان الهيمنة العلوية */
+    z-index: 10000;
   }
 
+  /* أنيميشن حركة الألوان الدائرية الانسيابية */
+  @keyframes rotateGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* حاوية اسم المتصفح الـ RGB المضيء */
   .browser-title { 
     font-weight: bold; 
     font-size: 1.3rem; 
-    color: #fff; 
+    background: linear-gradient(270deg, #9b59b6, #8e44ad, #3498db, #9b59b6);
+    background-size: 600% 600%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rotateGradient 6s linear infinite;
+    position: relative;
+    display: inline-block;
   }
 
-  /* زر الإعدادات المحدث - ذو مساحة لمس ممتازة ومضمون الاستجابة */
+  /* هالة البلور المضيئة مع خاصية حماية اللمس */
+  .browser-title::after {
+    content: "ALD Hisham Browser";
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(270deg, #9b59b6, #8e44ad, #3498db, #9b59b6);
+    background-size: 600% 600%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: rotateGradient 6s linear infinite;
+    filter: blur(12px);
+    opacity: 0.85;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* زر الإعدادات بالثيم الجديد */
   .settings-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(155, 89, 182, 0.1);
+    border: 1px solid rgba(155, 89, 182, 0.25);
     color: #fff;
     padding: 10px 16px;
     border-radius: 12px;
@@ -51,262 +84,118 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: background 0.2s, transform 0.1s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-tap-highlight-color: transparent;
+    position: relative;
+    z-index: 20000;
   }
-  .settings-btn:hover { background: rgba(255, 255, 255, 0.18); }
+  .settings-btn:hover { 
+    background: rgba(155, 89, 182, 0.2); 
+    border-color: rgba(155, 89, 182, 0.5);
+    box-shadow: 0 0 15px rgba(155, 89, 182, 0.3);
+  }
   .settings-btn:active { transform: scale(0.95); }
 
-  /* غطاء الخلفية المظلم المانع للتداخل */
+  /* غطاء الخلفية المظلم للنافذة المنبثقة */
   .modal-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    z-index: 1000000;
+    background: rgba(5, 3, 6, 0.8);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 999998;
     display: none;
   }
 
-  /* نافذة الإعدادات المنبثقة الحقيقية - ثابتة وفوق كل شيء */
+  /* نافذة الإعدادات المنبثقة */
   .settings-modal {
     position: fixed;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 420px;
-    background: #1e222b;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 90%; max-width: 420px;
+    background: #18141c;
+    border: 1px solid rgba(155, 89, 182, 0.3);
     border-radius: 20px;
     padding: 24px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.8);
-    z-index: 1000001;
-    display: none; /* يتم التحكم بها مباشرة عن طريق الـ JS */
+    box-shadow: 0 30px 70px rgba(0,0,0,0.9), 0 0 20px rgba(155, 89, 182, 0.1);
+    z-index: 999999;
+    display: none;
   }
 
-  .modal-title { font-size: 1.2rem; color: #fff; margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-  
-  .setting-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-  }
-  .setting-row label { font-size: 0.95rem; color: #cbd5e1; font-weight: 500; }
-  
-  .setting-row select {
-    background: #0f1217;
-    color: #fff;
-    border: 1px solid #2c3545;
-    padding: 8px 12px;
-    border-radius: 10px;
-    outline: none;
-    font-size: 0.9rem;
-    cursor: pointer;
-    min-width: 140px;
-  }
+  .modal-title { font-size: 1.2rem; color: #fff; margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px; }
+  .setting-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .setting-row label { font-size: 0.95rem; color: #cbd5e1; }
+  .setting-row select { background: #0b080d; color: #fff; border: 1px solid #2e2435; padding: 8px 12px; border-radius: 10px; outline: none; min-width: 140px; }
 
   .modal-close-btn {
-    width: 100%;
-    padding: 12px;
-    background: #3498db;
-    border: none;
-    border-radius: 12px;
-    color: #fff;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-top: 10px;
-    transition: background 0.2s;
+    width: 100%; padding: 12px; background: #9b59b6; border: none; border-radius: 12px; color: #fff; cursor: pointer; font-weight: 600; margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(155, 89, 182, 0.3);
   }
-  .modal-close-btn:hover { background: #2980b9; }
+  .modal-close-btn:hover { background: #8e44ad; }
 
   /* منطقة شريط المواقع المفتوحة */
   .tabs-container {
-    display: flex;
-    align-items: center;
-    background: rgba(17, 20, 26, 0.6); 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    padding: 8px 15px;
-    gap: 10px;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1000;
+    display: flex; align-items: center; background: rgba(11, 8, 13, 0.6); border-bottom: 1px solid rgba(155, 89, 182, 0.08); padding: 8px 15px; gap: 10px; flex-shrink: 0; position: relative; z-index: 900;
   }
-
-  .history-bar {
-    display: flex; 
-    gap: 10px; 
-    overflow-x: auto; 
-    flex: 1;
-    align-items: center;
-  }
-  .history-bar::-webkit-scrollbar { height: 4px; }
-  .history-bar::-webkit-scrollbar-thumb { background: #2c3545; border-radius: 10px; }
-
-  .history-item { 
-    display: flex; 
-    align-items: center; 
-    gap: 8px; 
-    padding: 6px 14px; 
-    border-radius: 12px; 
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    min-width: 130px;
-    max-width: 180px;
-    justify-content: space-between; 
-    cursor: pointer; 
-    white-space: nowrap; 
-    font-size: 0.85rem;
-    color: #cbd5e1; 
-  }
-  .history-item.active-tab {
-    background: rgba(52, 152, 219, 0.12);
-    border-color: rgba(52, 152, 219, 0.5);
-    color: #3498db;
-  }
-  .history-item img { width: 18px; height: 18px; border-radius: 4px; object-fit: cover; }
-  .history-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
-  
-  html[dir="rtl"] .history-item span { text-align: right; }
-  html[dir="ltr"] .history-item span { text-align: left; }
-
-  .history-item .close { font-weight: bold; cursor: pointer; color: #94a3b8; }
+  .history-bar { display: flex; gap: 10px; overflow-x: auto; flex: 1; align-items: center; }
+  .history-item { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); min-width: 130px; max-width: 180px; justify-content: space-between; cursor: pointer; white-space: nowrap; font-size: 0.85rem; color: #cbd5e1; transition: all 0.2s; }
+  .history-item:hover { background: rgba(155, 89, 182, 0.08); border-color: rgba(155, 89, 182, 0.2); }
+  .history-item.active-tab { background: rgba(155, 89, 182, 0.15); border-color: rgba(155, 89, 182, 0.4); color: #d29eee; }
+  .history-item img { width: 18px; height: 18px; border-radius: 4px; }
+  .history-item .close { font-weight: bold; color: #94a3b8; }
   .history-item .close:hover { color: #f87171; }
-  html[dir="rtl"] .history-item .close { margin-right: 6px; }
-  html[dir="ltr"] .history-item .close { margin-left: 6px; }
 
-  .clear-all-btn {
-    background: rgba(248, 113, 113, 0.1);
-    color: #f87171;
-    border: 1px solid rgba(248, 113, 113, 0.25);
-    padding: 6px 12px;
-    border-radius: 10px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: none; 
-  }
+  .clear-all-btn { background: rgba(248, 113, 113, 0.08); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.2); padding: 6px 12px; border-radius: 10px; font-size: 0.8rem; cursor: pointer; display: none; }
 
-  /* إطار عرض المحتوى الافتراضي */
-  iframe { 
-    flex: 1; 
-    width: 100%; 
-    border: none; 
-    background: #fff; 
-    order: 2; 
-    position: relative;
-    z-index: 10;
-  }
+  /* إطار عرض المحتوى الأساسي */
+  iframe { flex: 1; width: 100%; border: none; background: #fff; order: 2; position: relative; z-index: 10; }
 
-  /* شريط البحث السفلي المدمج */
+  /* شريط البحث السفلي المدمج بالثيم النيون البنفسجي الفخم */
   .search-area-wrapper {
-    background: rgba(22, 26, 34, 0.9);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    order: 3; 
-    flex-shrink: 0;
-    padding: 14px 20px;
+    background: rgba(18, 14, 22, 0.95);
+    border-top: 1px solid rgba(155, 89, 182, 0.12);
+    order: 3; flex-shrink: 0; padding: 14px 20px;
     position: relative;
     z-index: 5000; 
   }
   
-  .input-group { 
-    display: flex; 
-    gap: 10px; 
-    width: 100%; 
-    max-width: 700px; 
-    margin: 0 auto; 
-  }
-
-  .input-container {
-    position: relative;
-    flex: 1;
-    display: flex;
-    align-items: center;
-  }
+  .input-group { display: flex; gap: 12px; width: 100%; max-width: 700px; margin: 0 auto; }
+  .input-container { position: relative; flex: 1; display: flex; align-items: center; }
   
+  /* حقل البحث المتوهج بالبنفسجي النيون */
   input[type="text"] { 
-    width: 100%;
-    padding: 11px 16px; 
-    border: 1px solid #2c3545; 
-    border-radius: 14px; 
-    font-size: 0.95rem; 
-    outline: none; 
-    background: #0f1217;
-    color: #fff;
+    width: 100%; padding: 12px 18px; border: 1px solid #35263f; border-radius: 16px; font-size: 0.98rem; outline: none; background: #0b080d; color: #fff; transition: all 0.3s;
+  }
+  input[type="text"]:focus { 
+    border-color: #9b59b6; background: #110c14; box-shadow: 0 0 20px rgba(155, 89, 182, 0.45);
   }
   
-  html[dir="rtl"] input[type="text"] { padding-left: 40px; text-align: right; direction: rtl; }
-  html[dir="ltr"] input[type="text"] { padding-right: 40px; text-align: left; direction: ltr; }
+  html[dir="rtl"] input[type="text"] { padding-left: 42px; text-align: right; }
+  html[dir="ltr"] input[type="text"] { padding-right: 42px; text-align: left; }
 
-  .search-loader {
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #3498db;
-    border-radius: 50%;
-    animation: spinLoader 0.6s linear infinite;
-    display: none; 
-  }
-  html[dir="rtl"] .search-loader { left: 14px; }
-  html[dir="ltr"] .search-loader { right: 14px; }
-
-  @keyframes spinLoader { to { transform: rotate(360deg); } }
-
+  /* صندوق التوقعات المتناسق مع الثيم الجديد */
   .suggestions-box {
     position: absolute;
-    bottom: calc(100% + 8px); 
-    left: 0;
-    right: 0; 
-    background: #161a22;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 14px;
-    max-height: 250px;
+    bottom: calc(100% + 10px); left: 0; right: 0; 
+    background: #150f1a;
+    border: 1px solid rgba(155, 89, 182, 0.4);
+    border-radius: 16px;
+    max-height: 260px;
     overflow-y: auto;
-    box-shadow: 0 -10px 25px rgba(0,0,0,0.6);
+    box-shadow: 0 -15px 35px rgba(0,0,0,0.8), 0 0 15px rgba(155, 89, 182, 0.15);
     display: none; 
-    z-index: 6000; 
-  }
-  html[dir="rtl"] .suggestions-box { direction: rtl; text-align: right; }
-  html[dir="ltr"] .suggestions-box { direction: ltr; text-align: left; }
-
-  .suggestion-item {
-    padding: 12px 16px;
-    font-size: 0.9rem;
-    color: #cbd5e1;
-    cursor: pointer;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-  }
-  html[dir="rtl"] .suggestion-item { text-align: right; direction: rtl; }
-  html[dir="ltr"] .suggestion-item { text-align: left; direction: ltr; }
-  .suggestion-item:hover { background: rgba(52, 152, 219, 0.15); color: #3498db; }
-
-  button { 
-    padding: 11px 18px; 
-    border: none; 
-    border-radius: 14px; 
-    background: #3498db; 
-    color: #fff; 
-    font-weight: 500;
-    font-size: 0.95rem;
-    cursor: pointer; 
-    white-space: nowrap;
-  }
-  button:hover { background: #2980b9; }
-  
-  button[type="button"] { 
-    background: rgba(255, 255, 255, 0.05); 
-    color: #e2e8f0; 
-    border: 1px solid rgba(255, 255, 255, 0.1); 
+    z-index: 9999999 !important;
   }
 
-  @media (max-width: 768px) {
-    .top-toolbar { padding: 10px 15px; }
-    .browser-title { font-size: 1.1rem; }
-    input[type="text"], button { font-size: 0.85rem; padding: 9px 12px; border-radius: 12px; }
-  }
+  .suggestion-item { padding: 13px 18px; font-size: 0.93rem; color: #cbd5e1; cursor: pointer; border-bottom: 1px solid rgba(255, 255, 255, 0.02); }
+  .suggestion-item:hover { background: rgba(155, 89, 182, 0.2); color: #d29eee; }
+
+  /* الأزرار التفاعلية البنفسجية */
+  button { padding: 12px 22px; border: none; border-radius: 16px; background: #9b59b6; color: #fff; font-weight: 600; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 12px rgba(155, 89, 182, 0.2); }
+  button:hover { background: #8e44ad; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(155, 89, 182, 0.35); }
+  button:active { transform: scale(0.94); }
+  button[type="button"] { background: rgba(255, 255, 255, 0.04); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.06); box-shadow: none; }
+  button[type="button"]:hover { background: rgba(155, 89, 182, 0.15); border-color: rgba(155, 89, 182, 0.3); color: #fff; }
 </style>
 </head>
 <body>
@@ -315,7 +204,6 @@
 
 <div class="settings-modal" id="settings-modal">
   <div class="modal-title" id="text-modal-title">⚙️ إعدادات المتصفح</div>
-  
   <div class="setting-row">
     <label id="text-label-engine">محرك البحث الافتراضي:</label>
     <select id="engine-select" onchange="updateSearchEngine()">
@@ -324,7 +212,6 @@
       <option value="duckduckgo">DuckDuckGo</option>
     </select>
   </div>
-
   <div class="setting-row">
     <label id="text-label-lang">لغة المتصفح:</label>
     <select id="lang-select" onchange="updateLanguage()">
@@ -332,13 +219,12 @@
       <option value="en">English</option>
     </select>
   </div>
-
   <button class="modal-close-btn" id="text-btn-close" onclick="toggleSettings(false)">حفظ وإغلاق</button>
 </div>
 
 <div class="top-toolbar">
   <div class="browser-title">ALD Hisham Browser</div>
-  <button type="button" class="settings-btn" id="text-settings-btn" onclick="toggleSettings(true)">⚙️ الإعدادات</button>
+  <button type="button" class="settings-btn" id="custom-settings-toggle" onclick="toggleSettings(true)">⚙️ الإعدادات</button>
 </div>
 
 <div class="tabs-container">
@@ -347,11 +233,10 @@
 </div>
 
 <div class="search-area-wrapper">
-  <form>
+  <form id="search-form">
     <div class="input-group">
       <div class="input-container">
-        <input type="text" id="search-input" name="q" placeholder="بحث أو إدخال رابط..." autocomplete="off" required />
-        <div class="search-loader" id="search-loader"></div>
+        <input type="text" id="search-input" placeholder="بحث أو إدخال رابط..." autocomplete="off" required />
         <div class="suggestions-box" id="suggestions-box"></div>
       </div>
       <button type="submit" id="text-btn-search">بحث</button>
@@ -363,17 +248,11 @@
 <iframe id="content-frame" src="https://www.google.com/search?igu=1"></iframe>
 
 <script>
-// كود الفتح والإغلاق المباشر والإجباري تم نقله للأعلى لضمان التشغيل الفوري والنهائي
 function toggleSettings(show) {
   const modal = document.getElementById('settings-modal');
   const overlay = document.getElementById('modal-overlay');
-  if(show) {
-    modal.style.display = 'block';
-    overlay.style.display = 'block';
-  } else {
-    modal.style.display = 'none';
-    overlay.style.display = 'none';
-  }
+  modal.style.display = show ? 'block' : 'none';
+  overlay.style.display = show ? 'block' : 'none';
 }
 
 const iframe = document.getElementById('content-frame');
@@ -381,52 +260,17 @@ const historyBar = document.getElementById('history-bar');
 const clearAllBtn = document.getElementById('clear-all-btn');
 const searchInput = document.getElementById('search-input');
 const suggestionsBox = document.getElementById('suggestions-box');
-const searchLoader = document.getElementById('search-loader');
 const mainHtml = document.getElementById('main-html');
 
 const languages = {
-  ar: {
-    title: "⚙️ إعدادات المتصفح",
-    engineLabel: "محرك البحث الافتراضي:",
-    langLabel: "لغة المتصفح:",
-    closeBtn: "حفظ وإغلاق",
-    settingsBtn: "⚙️ الإعدادات",
-    searchPlaceholder: "بحث أو إدخال رابط...",
-    searchBtn: "بحث",
-    homeBtn: "الرئيسية",
-    clearAll: "إلغاء الكل",
-    siteWord: "موقع "
-  },
-  en: {
-    title: "⚙️ Browser Settings",
-    engineLabel: "Default Search Engine:",
-    langLabel: "Browser Language:",
-    closeBtn: "Save & Close",
-    settingsBtn: "⚙️ Settings",
-    searchPlaceholder: "Search or enter URL...",
-    searchBtn: "Search",
-    homeBtn: "Home",
-    clearAll: "Clear All",
-    siteWord: "Tab "
-  }
+  ar: { title: "⚙️ إعدادات المتصفح", engineLabel: "محرك البحث الافتراضي:", langLabel: "لغة المتصفح:", closeBtn: "حفظ وإغلاق", settingsBtn: "⚙️ الإعدادات", searchPlaceholder: "بحث أو إدخال رابط...", searchBtn: "بحث", homeBtn: "الرئيسية", clearAll: "إلغاء الكل", siteWord: "موقع " },
+  en: { title: "⚙️ Browser Settings", engineLabel: "Default Search Engine:", langLabel: "Browser Language:", closeBtn: "Save & Close", settingsBtn: "⚙️ Settings", searchPlaceholder: "Search or enter URL...", searchBtn: "Search", homeBtn: "Home", clearAll: "Clear All", siteWord: "Tab " }
 };
 
 const searchEngines = {
-  google: {
-    searchUrl: "https://www.google.com/search?igu=1&q=",
-    homeUrl: "https://www.google.com/search?igu=1",
-    suggestUrl: "https://suggestqueries.google.com/complete/search?client=youtube&q="
-  },
-  bing: {
-    searchUrl: "https://www.bing.com/search?q=",
-    homeUrl: "https://www.bing.com",
-    suggestUrl: "https://api.bing.com/osjson.aspx?query="
-  },
-  duckduckgo: {
-    searchUrl: "https://duckduckgo.com/?q=",
-    homeUrl: "https://duckduckgo.com",
-    suggestUrl: null 
-  }
+  google: { searchUrl: "https://www.google.com/search?igu=1&q=", homeUrl: "https://www.google.com/search?igu=1" },
+  bing: { searchUrl: "https://www.bing.com/search?q=", homeUrl: "https://www.bing.com" },
+  duckduckgo: { searchUrl: "https://duckduckgo.com/?q=", homeUrl: "https://duckduckgo.com" }
 };
 
 let currentLang = 'ar';
@@ -437,47 +281,26 @@ let debounceTimeout;
 
 function updateLanguage() {
   currentLang = document.getElementById('lang-select').value;
-  
-  if(currentLang === 'ar') {
-    mainHtml.setAttribute('dir', 'rtl');
-    mainHtml.setAttribute('lang', 'ar');
-  } else {
-    mainHtml.setAttribute('dir', 'ltr');
-    mainHtml.setAttribute('lang', 'en');
-  }
+  mainHtml.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+  mainHtml.setAttribute('lang', currentLang);
 
   document.getElementById('text-modal-title').innerText = languages[currentLang].title;
   document.getElementById('text-label-engine').innerText = languages[currentLang].engineLabel;
   document.getElementById('text-label-lang').innerText = languages[currentLang].langLabel;
   document.getElementById('text-btn-close').innerText = languages[currentLang].closeBtn;
-  document.getElementById('text-settings-btn').innerText = languages[currentLang].settingsBtn;
+  document.getElementById('custom-settings-toggle').innerText = languages[currentLang].settingsBtn;
   document.getElementById('text-btn-search').innerText = languages[currentLang].searchBtn;
   document.getElementById('text-btn-home').innerText = languages[currentLang].homeBtn;
   document.getElementById('clear-all-btn').innerText = languages[currentLang].clearAll;
   searchInput.setAttribute('placeholder', languages[currentLang].searchPlaceholder);
-
   renderHistory();
 }
 
-function updateSearchEngine() {
-  currentEngine = document.getElementById('engine-select').value;
-}
-
-function checkIframePermission(url) {
-  const blockedSites = ["facebook.com", "instagram.com", "twitter.com", "x.com", "linkedin.com", "github.com", "reddit.com", "netflix.com"];
-  return blockedSites.some(site => url.toLowerCase().includes(site));
-}
+function updateSearchEngine() { currentEngine = document.getElementById('engine-select').value; }
 
 function navigate(url, imgSrc) {
-  if(url.includes("youtube.com") || checkIframePermission(url)){
-    window.open(url, '_blank'); 
-    searchLoader.style.display = 'none';
-    return;
-  }
-  
   iframe.style.opacity = '0.3';
   setTimeout(() => { iframe.style.opacity = '1'; }, 250);
-
   iframe.src = url;
   historyStack.splice(currentIndex+1);
   historyStack.push({url, img: imgSrc});
@@ -488,90 +311,66 @@ function navigate(url, imgSrc) {
 function renderHistory(){
   historyBar.innerHTML = '';
   clearAllBtn.style.display = historyStack.length > 0 ? 'block' : 'none';
-
   historyStack.forEach((item, index)=>{
     const div = document.createElement('div');
     div.className = 'history-item' + (index === currentIndex ? ' active-tab' : '');
-    
     const img = document.createElement('img');
     img.src = item.img || 'https://www.google.com/favicon.ico';
     div.appendChild(img);
-    
     const text = document.createElement('span');
     text.innerText = languages[currentLang].siteWord + (index + 1);
     div.appendChild(text);
-    
     const close = document.createElement('span');
     close.className = 'close'; close.innerText = '×';
     close.onclick = e=>{
       e.stopPropagation();
       historyStack.splice(index, 1);
       if(currentIndex >= index) currentIndex--;
-      if(currentIndex < 0 && historyStack.length > 0) currentIndex = 0;
       iframe.src = historyStack[currentIndex]?.url || searchEngines[currentEngine].homeUrl;
       renderHistory();
     };
     div.appendChild(close);
-    
-    div.onclick = ()=>{
-      currentIndex = index; 
-      iframe.src = item.url;
-      renderHistory();
-    };
+    div.onclick = ()=>{ currentIndex = index; iframe.src = item.url; renderHistory(); };
     historyBar.appendChild(div);
   });
 }
 
-function clearAllHistory() {
-  historyStack = [];
-  currentIndex = -1;
-  iframe.src = searchEngines[currentEngine].homeUrl;
-  renderHistory();
-}
-
+function clearAllHistory() { historyStack = []; currentIndex = -1; iframe.src = searchEngines[currentEngine].homeUrl; renderHistory(); }
 function goHome(){ navigate(searchEngines[currentEngine].homeUrl, 'https://www.google.com/favicon.ico'); }
 
 searchInput.addEventListener('input', function() {
   const inputValue = this.value.trim();
   clearTimeout(debounceTimeout);
   
-  if (inputValue.length === 0 || !searchEngines[currentEngine].suggestUrl) {
+  if (inputValue.length === 0) {
     suggestionsBox.innerHTML = '';
     suggestionsBox.style.display = 'none';
-    searchLoader.style.display = 'none';
     return;
   }
 
-  searchLoader.style.display = 'block';
-
   debounceTimeout = setTimeout(() => {
+    const oldScript = document.getElementById('jsonp-suggest');
+    if(oldScript) oldScript.remove();
+
     const script = document.createElement('script');
-    script.src = `${searchEngines[currentEngine].suggestUrl}${encodeURIComponent(inputValue)}&hl=${currentLang}&callback=handleSuggestions`;
+    script.id = 'jsonp-suggest';
+    script.src = `https://suggestqueries.google.com/complete/search?client=youtube&q=${encodeURIComponent(inputValue)}&hl=${currentLang}&callback=handleGoogleSuggestions`;
     document.body.appendChild(script);
-    document.body.removeChild(script);
-  }, 150);
+  }, 200);
 });
 
-window.handleSuggestions = function(data) {
-  searchLoader.style.display = 'none'; 
+window.handleGoogleSuggestions = function(data) {
   suggestionsBox.innerHTML = '';
-  
-  let results = [];
-  if (data && data[1]) {
-    results = data[1].slice(0, 6);
-  }
-  
-  if (results.length > 0) {
-    results.forEach(item => {
-      const term = typeof item === 'string' ? item : item[0];
+  if (data && data[1] && data[1].length > 0) {
+    data[1].slice(0, 5).forEach(item => {
+      const term = item[0];
       const div = document.createElement('div');
       div.className = 'suggestion-item';
       div.innerText = term;
-      
       div.onclick = () => {
         searchInput.value = term;
         suggestionsBox.style.display = 'none';
-        document.querySelector('form').requestSubmit();
+        document.getElementById('search-form').requestSubmit();
       };
       suggestionsBox.appendChild(div);
     });
@@ -587,7 +386,7 @@ document.addEventListener('click', function(e) {
   }
 });
 
-document.querySelector('form').onsubmit = function(e){
+document.getElementById('search-form').onsubmit = function(e){
   e.preventDefault();
   const query = searchInput.value.trim();
   if(query){
@@ -596,17 +395,15 @@ document.querySelector('form').onsubmit = function(e){
       let url = query.startsWith('http') ? query : 'https://' + query;
       navigate(url, 'https://www.google.com/favicon.ico');
     } else {
-      const url = searchEngines[currentEngine].searchUrl + encodeURIComponent(query);
-      navigate(url, 'https://www.google.com/favicon.ico');
+      navigate(searchEngines[currentEngine].searchUrl + encodeURIComponent(query), 'https://www.google.com/favicon.ico');
     }
   }
 }
 
 window.onload = ()=>{
-  updateLanguage(); 
-  navigate('https://www.google.com', 'https://www.google.com/favicon.ico'); 
+  updateLanguage();
+  iframe.src = "https://www.google.com/search?igu=1";
 }
 </script>
-
 </body>
 </html>
