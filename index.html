@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" id="main-html">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,63 +15,136 @@
     background: linear-gradient(135deg, #1e222b 0%, #0f1115 100%); 
     color: #e2e8f0;
     overflow: hidden;
+    position: relative;
   }
 
-  /* شريط التولبار العلوي */
+  /* شريط التولبار العلوي - معزول ومحمي تماماً لقابلية الضغط الفورية */
   .top-toolbar {
-    background: rgba(22, 26, 34, 0.8);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background: rgba(22, 26, 34, 0.9);
     padding: 14px 20px; 
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
-    z-index: 100;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     flex-shrink: 0;
+    position: relative;
+    z-index: 99999 !important; /* قيمة قصوى لضمان الهيمنة العلوية */
   }
 
   .browser-title { 
     font-weight: bold; 
     font-size: 1.3rem; 
     color: #fff; 
-    letter-spacing: 0.5px;
   }
 
-  /* منطقة شريط المواقع */
+  /* زر الإعدادات المحدث - ذو مساحة لمس ممتازة ومضمون الاستجابة */
+  .settings-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .settings-btn:hover { background: rgba(255, 255, 255, 0.18); }
+  .settings-btn:active { transform: scale(0.95); }
+
+  /* غطاء الخلفية المظلم المانع للتداخل */
+  .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1000000;
+    display: none;
+  }
+
+  /* نافذة الإعدادات المنبثقة الحقيقية - ثابتة وفوق كل شيء */
+  .settings-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 420px;
+    background: #1e222b;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+    z-index: 1000001;
+    display: none; /* يتم التحكم بها مباشرة عن طريق الـ JS */
+  }
+
+  .modal-title { font-size: 1.2rem; color: #fff; margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+  
+  .setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .setting-row label { font-size: 0.95rem; color: #cbd5e1; font-weight: 500; }
+  
+  .setting-row select {
+    background: #0f1217;
+    color: #fff;
+    border: 1px solid #2c3545;
+    padding: 8px 12px;
+    border-radius: 10px;
+    outline: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    min-width: 140px;
+  }
+
+  .modal-close-btn {
+    width: 100%;
+    padding: 12px;
+    background: #3498db;
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: 10px;
+    transition: background 0.2s;
+  }
+  .modal-close-btn:hover { background: #2980b9; }
+
+  /* منطقة شريط المواقع المفتوحة */
   .tabs-container {
     display: flex;
     align-items: center;
     background: rgba(17, 20, 26, 0.6); 
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
     padding: 8px 15px;
     gap: 10px;
     flex-shrink: 0;
-    z-index: 90;
+    position: relative;
+    z-index: 1000;
   }
 
-  /* شريط المواقع المفتوحة */
   .history-bar {
     display: flex; 
     gap: 10px; 
     overflow-x: auto; 
     flex: 1;
     align-items: center;
-    scroll-behavior: smooth;
   }
   .history-bar::-webkit-scrollbar { height: 4px; }
   .history-bar::-webkit-scrollbar-thumb { background: #2c3545; border-radius: 10px; }
 
-  /* أنيميشن الظهور المرن */
-  @keyframes tabPopIn {
-    0% { opacity: 0; transform: scale(0.85) translateY(5px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
-  /* بطاقات المواقع المفتوحة مع تأثير البلورة الزجاجية */
   .history-item { 
     display: flex; 
     align-items: center; 
@@ -79,8 +152,6 @@
     padding: 6px 14px; 
     border-radius: 12px; 
     background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(20px); 
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.06);
     min-width: 130px;
     max-width: 180px;
@@ -89,51 +160,25 @@
     white-space: nowrap; 
     font-size: 0.85rem;
     color: #cbd5e1; 
-    animation: tabPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
-  
-  .history-item:hover { 
-    background: rgba(255, 255, 255, 0.08); 
-    border-color: rgba(52, 152, 219, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  }
-
-  .history-item:active {
-    transform: scale(0.92) translateY(0);
-    background: rgba(255, 255, 255, 0.12);
-  }
-
   .history-item.active-tab {
     background: rgba(52, 152, 219, 0.12);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
     border-color: rgba(52, 152, 219, 0.5);
     color: #3498db;
-    box-shadow: 0 0 15px rgba(52, 152, 219, 0.15);
   }
-
-  .history-item img { width: 18px; height: 18px; border-radius: 4px; object-fit: cover; flex-shrink: 0; }
-  .history-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: right; }
+  .history-item img { width: 18px; height: 18px; border-radius: 4px; object-fit: cover; }
+  .history-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
   
-  .history-item .close { 
-    margin-left: 6px; 
-    font-weight: bold; 
-    cursor: pointer; 
-    color: #94a3b8; 
-    font-size: 1.1rem;
-    transition: color 0.2s, transform 0.2s;
-    display: flex;
-    align-items: center;
-  }
-  .history-item .close:hover { color: #f87171; transform: scale(1.2); }
+  html[dir="rtl"] .history-item span { text-align: right; }
+  html[dir="ltr"] .history-item span { text-align: left; }
 
-  /* زر إلغاء الكل الزجاجي */
+  .history-item .close { font-weight: bold; cursor: pointer; color: #94a3b8; }
+  .history-item .close:hover { color: #f87171; }
+  html[dir="rtl"] .history-item .close { margin-right: 6px; }
+  html[dir="ltr"] .history-item .close { margin-left: 6px; }
+
   .clear-all-btn {
     background: rgba(248, 113, 113, 0.1);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
     color: #f87171;
     border: 1px solid rgba(248, 113, 113, 0.25);
     padding: 6px 12px;
@@ -141,39 +186,29 @@
     font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.25s ease;
     display: none; 
-    animation: tabPopIn 0.25s ease forwards;
   }
-  .clear-all-btn:hover {
-    background: rgba(248, 113, 113, 0.25);
-    border-color: #f87171;
-    transform: translateY(-1px);
-  }
-  .clear-all-btn:active { transform: scale(0.93); }
 
-  /* إطار عرض المحتوى المتناسق */
+  /* إطار عرض المحتوى الافتراضي */
   iframe { 
     flex: 1; 
     width: 100%; 
     border: none; 
     background: #fff; 
     order: 2; 
-    transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), transform 0.3s ease;
+    position: relative;
+    z-index: 10;
   }
 
-  /* منطقة شريط البحث السفلي مع صندوق التوقعات */
+  /* شريط البحث السفلي المدمج */
   .search-area-wrapper {
-    background: rgba(22, 26, 34, 0.8);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background: rgba(22, 26, 34, 0.9);
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     order: 3; 
     flex-shrink: 0;
     padding: 14px 20px;
     position: relative;
-    z-index: 110; 
+    z-index: 5000; 
   }
   
   .input-group { 
@@ -182,10 +217,8 @@
     width: 100%; 
     max-width: 700px; 
     margin: 0 auto; 
-    position: relative;
   }
 
-  /* حاوي حقل الإدخال لوضع "الطابة" بداخله */
   .input-container {
     position: relative;
     flex: 1;
@@ -196,26 +229,19 @@
   input[type="text"] { 
     width: 100%;
     padding: 11px 16px; 
-    padding-left: 40px; /* مساحة للطابة */
     border: 1px solid #2c3545; 
     border-radius: 14px; 
     font-size: 0.95rem; 
     outline: none; 
     background: #0f1217;
     color: #fff;
-    text-align: right; /* إجبار الكتابة من اليمين */
-    direction: rtl;    /* تثبيت الاتجاه العربي */
-    transition: all 0.25s ease; 
   }
-  input[type="text"]:focus { 
-    border-color: #3498db; 
-    box-shadow: 0 0 12px rgba(52,152,219,0.3); 
-  }
+  
+  html[dir="rtl"] input[type="text"] { padding-left: 40px; text-align: right; direction: rtl; }
+  html[dir="ltr"] input[type="text"] { padding-right: 40px; text-align: left; direction: ltr; }
 
-  /* تصميم "الطابة" (Loading Spinner) موضعها جهة اليسار بدقة */
   .search-loader {
     position: absolute;
-    left: 14px;
     width: 18px;
     height: 18px;
     border: 2px solid rgba(255, 255, 255, 0.1);
@@ -224,106 +250,95 @@
     animation: spinLoader 0.6s linear infinite;
     display: none; 
   }
+  html[dir="rtl"] .search-loader { left: 14px; }
+  html[dir="ltr"] .search-loader { right: 14px; }
 
-  @keyframes spinLoader {
-    to { transform: rotate(360deg); }
-  }
+  @keyframes spinLoader { to { transform: rotate(360deg); } }
 
-  /* قائمة التوقعات الحية المحدثة لضبط اتجاه اللغة العربية */
   .suggestions-box {
     position: absolute;
     bottom: calc(100% + 8px); 
     left: 0;
     right: 0; 
-    background: rgba(22, 26, 34, 0.95);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #161a22;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 14px;
     max-height: 250px;
     overflow-y: auto;
     box-shadow: 0 -10px 25px rgba(0,0,0,0.6);
     display: none; 
-    z-index: 9999;
-    direction: rtl;    /* إجبار القائمة بالكامل على محاذاة العربية */
-    text-align: right; /* بدء النص من اليمين تماماً */
-    animation: tabPopIn 0.2s ease forwards;
+    z-index: 6000; 
   }
+  html[dir="rtl"] .suggestions-box { direction: rtl; text-align: right; }
+  html[dir="ltr"] .suggestions-box { direction: ltr; text-align: left; }
 
   .suggestion-item {
     padding: 12px 16px;
     font-size: 0.9rem;
     color: #cbd5e1;
     cursor: pointer;
-    text-align: right;
-    direction: rtl; /* تثبيت كل كلمة متوقعة بشكل مستقل */
-    transition: all 0.2s ease;
     border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   }
-  .suggestion-item:last-child { border-bottom: none; }
-  .suggestion-item:hover {
-    background: rgba(52, 152, 219, 0.15);
-    color: #3498db;
-    padding-right: 22px; /* تأثير حركة الدخول من اليمين */
-  }
+  html[dir="rtl"] .suggestion-item { text-align: right; direction: rtl; }
+  html[dir="ltr"] .suggestion-item { text-align: left; direction: ltr; }
+  .suggestion-item:hover { background: rgba(52, 152, 219, 0.15); color: #3498db; }
 
-  /* أزرار البحث والرئيسية الزجاجية */
   button { 
     padding: 11px 18px; 
     border: none; 
     border-radius: 14px; 
-    background: rgba(52, 152, 219, 0.85); 
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: #3498db; 
     color: #fff; 
     font-weight: 500;
     font-size: 0.95rem;
     cursor: pointer; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    transition: background 0.25s, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.4), box-shadow 0.2s;
     white-space: nowrap;
   }
-  button:hover { 
-    background: #2980b9; 
-    transform: translateY(-1px);
-    box-shadow: 0 6px 15px rgba(52,152,219,0.3);
-  }
-  button:active { 
-    transform: scale(0.92); 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  }
+  button:hover { background: #2980b9; }
   
   button[type="button"] { 
-    background: rgba(255, 255, 255, 0.04); 
+    background: rgba(255, 255, 255, 0.05); 
     color: #e2e8f0; 
-    border: 1px solid rgba(255, 255, 255, 0.05); 
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-  }
-  button[type="button"]:hover { 
-    background: rgba(255, 255, 255, 0.1); 
-    border-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1); 
   }
 
-  /* هندسة التناسق التام لشاشات الجوال والأيباد */
   @media (max-width: 768px) {
     .top-toolbar { padding: 10px 15px; }
     .browser-title { font-size: 1.1rem; }
-    
-    .tabs-container { padding: 6px 10px; gap: 6px; }
-    .history-item { min-width: 110px; padding: 5px 10px; font-size: 0.8rem; border-radius: 10px; }
-    .clear-all-btn { padding: 5px 10px; font-size: 0.75rem; border-radius: 8px; }
-
-    .search-area-wrapper { padding: 10px 15px; }
-    .input-group { gap: 6px; }
     input[type="text"], button { font-size: 0.85rem; padding: 9px 12px; border-radius: 12px; }
   }
 </style>
 </head>
 <body>
 
+<div class="modal-overlay" id="modal-overlay" onclick="toggleSettings(false)"></div>
+
+<div class="settings-modal" id="settings-modal">
+  <div class="modal-title" id="text-modal-title">⚙️ إعدادات المتصفح</div>
+  
+  <div class="setting-row">
+    <label id="text-label-engine">محرك البحث الافتراضي:</label>
+    <select id="engine-select" onchange="updateSearchEngine()">
+      <option value="google">Google</option>
+      <option value="bing">Bing</option>
+      <option value="duckduckgo">DuckDuckGo</option>
+    </select>
+  </div>
+
+  <div class="setting-row">
+    <label id="text-label-lang">لغة المتصفح:</label>
+    <select id="lang-select" onchange="updateLanguage()">
+      <option value="ar">العربية</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+
+  <button class="modal-close-btn" id="text-btn-close" onclick="toggleSettings(false)">حفظ وإغلاق</button>
+</div>
+
 <div class="top-toolbar">
   <div class="browser-title">ALD Hisham Browser</div>
+  <button type="button" class="settings-btn" id="text-settings-btn" onclick="toggleSettings(true)">⚙️ الإعدادات</button>
 </div>
 
 <div class="tabs-container">
@@ -339,8 +354,8 @@
         <div class="search-loader" id="search-loader"></div>
         <div class="suggestions-box" id="suggestions-box"></div>
       </div>
-      <button type="submit">بحث</button>
-      <button type="button" onclick="goHome()">الرئيسية</button>
+      <button type="submit" id="text-btn-search">بحث</button>
+      <button type="button" id="text-btn-home" onclick="goHome()">الرئيسية</button>
     </div>
   </form>
 </div>
@@ -348,16 +363,105 @@
 <iframe id="content-frame" src="https://www.google.com/search?igu=1"></iframe>
 
 <script>
+// كود الفتح والإغلاق المباشر والإجباري تم نقله للأعلى لضمان التشغيل الفوري والنهائي
+function toggleSettings(show) {
+  const modal = document.getElementById('settings-modal');
+  const overlay = document.getElementById('modal-overlay');
+  if(show) {
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+  } else {
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
+  }
+}
+
 const iframe = document.getElementById('content-frame');
 const historyBar = document.getElementById('history-bar');
 const clearAllBtn = document.getElementById('clear-all-btn');
 const searchInput = document.getElementById('search-input');
 const suggestionsBox = document.getElementById('suggestions-box');
 const searchLoader = document.getElementById('search-loader');
+const mainHtml = document.getElementById('main-html');
 
+const languages = {
+  ar: {
+    title: "⚙️ إعدادات المتصفح",
+    engineLabel: "محرك البحث الافتراضي:",
+    langLabel: "لغة المتصفح:",
+    closeBtn: "حفظ وإغلاق",
+    settingsBtn: "⚙️ الإعدادات",
+    searchPlaceholder: "بحث أو إدخال رابط...",
+    searchBtn: "بحث",
+    homeBtn: "الرئيسية",
+    clearAll: "إلغاء الكل",
+    siteWord: "موقع "
+  },
+  en: {
+    title: "⚙️ Browser Settings",
+    engineLabel: "Default Search Engine:",
+    langLabel: "Browser Language:",
+    closeBtn: "Save & Close",
+    settingsBtn: "⚙️ Settings",
+    searchPlaceholder: "Search or enter URL...",
+    searchBtn: "Search",
+    homeBtn: "Home",
+    clearAll: "Clear All",
+    siteWord: "Tab "
+  }
+};
+
+const searchEngines = {
+  google: {
+    searchUrl: "https://www.google.com/search?igu=1&q=",
+    homeUrl: "https://www.google.com/search?igu=1",
+    suggestUrl: "https://suggestqueries.google.com/complete/search?client=youtube&q="
+  },
+  bing: {
+    searchUrl: "https://www.bing.com/search?q=",
+    homeUrl: "https://www.bing.com",
+    suggestUrl: "https://api.bing.com/osjson.aspx?query="
+  },
+  duckduckgo: {
+    searchUrl: "https://duckduckgo.com/?q=",
+    homeUrl: "https://duckduckgo.com",
+    suggestUrl: null 
+  }
+};
+
+let currentLang = 'ar';
+let currentEngine = 'google';
 let historyStack = [];
 let currentIndex = -1;
 let debounceTimeout;
+
+function updateLanguage() {
+  currentLang = document.getElementById('lang-select').value;
+  
+  if(currentLang === 'ar') {
+    mainHtml.setAttribute('dir', 'rtl');
+    mainHtml.setAttribute('lang', 'ar');
+  } else {
+    mainHtml.setAttribute('dir', 'ltr');
+    mainHtml.setAttribute('lang', 'en');
+  }
+
+  document.getElementById('text-modal-title').innerText = languages[currentLang].title;
+  document.getElementById('text-label-engine').innerText = languages[currentLang].engineLabel;
+  document.getElementById('text-label-lang').innerText = languages[currentLang].langLabel;
+  document.getElementById('text-btn-close').innerText = languages[currentLang].closeBtn;
+  document.getElementById('text-settings-btn').innerText = languages[currentLang].settingsBtn;
+  document.getElementById('text-btn-search').innerText = languages[currentLang].searchBtn;
+  document.getElementById('text-btn-home').innerText = languages[currentLang].homeBtn;
+  document.getElementById('clear-all-btn').innerText = languages[currentLang].clearAll;
+  searchInput.setAttribute('placeholder', languages[currentLang].searchPlaceholder);
+
+  renderHistory();
+}
+
+function updateSearchEngine() {
+  currentEngine = document.getElementById('engine-select').value;
+}
 
 function checkIframePermission(url) {
   const blockedSites = ["facebook.com", "instagram.com", "twitter.com", "x.com", "linkedin.com", "github.com", "reddit.com", "netflix.com"];
@@ -372,11 +476,7 @@ function navigate(url, imgSrc) {
   }
   
   iframe.style.opacity = '0.3';
-  iframe.style.transform = 'scale(0.99)';
-  setTimeout(() => { 
-    iframe.style.opacity = '1'; 
-    iframe.style.transform = 'scale(1)';
-  }, 250);
+  setTimeout(() => { iframe.style.opacity = '1'; }, 250);
 
   iframe.src = url;
   historyStack.splice(currentIndex+1);
@@ -387,12 +487,7 @@ function navigate(url, imgSrc) {
 
 function renderHistory(){
   historyBar.innerHTML = '';
-  
-  if(historyStack.length > 0) {
-    clearAllBtn.style.display = 'block';
-  } else {
-    clearAllBtn.style.display = 'none';
-  }
+  clearAllBtn.style.display = historyStack.length > 0 ? 'block' : 'none';
 
   historyStack.forEach((item, index)=>{
     const div = document.createElement('div');
@@ -403,7 +498,7 @@ function renderHistory(){
     div.appendChild(img);
     
     const text = document.createElement('span');
-    text.innerText = 'موقع ' + (index + 1);
+    text.innerText = languages[currentLang].siteWord + (index + 1);
     div.appendChild(text);
     
     const close = document.createElement('span');
@@ -413,19 +508,13 @@ function renderHistory(){
       historyStack.splice(index, 1);
       if(currentIndex >= index) currentIndex--;
       if(currentIndex < 0 && historyStack.length > 0) currentIndex = 0;
-      
-      iframe.style.opacity = '0.4';
-      setTimeout(() => { iframe.style.opacity = '1'; }, 150);
-      
-      iframe.src = historyStack[currentIndex]?.url || 'https://www.google.com/search?igu=1';
+      iframe.src = historyStack[currentIndex]?.url || searchEngines[currentEngine].homeUrl;
       renderHistory();
     };
     div.appendChild(close);
     
     div.onclick = ()=>{
       currentIndex = index; 
-      iframe.style.opacity = '0.4';
-      setTimeout(() => { iframe.style.opacity = '1'; }, 150);
       iframe.src = item.url;
       renderHistory();
     };
@@ -436,19 +525,17 @@ function renderHistory(){
 function clearAllHistory() {
   historyStack = [];
   currentIndex = -1;
-  iframe.src = 'https://www.google.com/search?igu=1';
+  iframe.src = searchEngines[currentEngine].homeUrl;
   renderHistory();
 }
 
-function goHome(){ navigate('https://www.google.com/search?igu=1', 'https://www.google.com/favicon.ico'); }
+function goHome(){ navigate(searchEngines[currentEngine].homeUrl, 'https://www.google.com/favicon.ico'); }
 
-// منطق جلب الاقتراحات الحية والمباشرة من محرك بحث جوجل بنظام آمن ومحدث للغة العربية
 searchInput.addEventListener('input', function() {
   const inputValue = this.value.trim();
-  
   clearTimeout(debounceTimeout);
   
-  if (inputValue.length === 0) {
+  if (inputValue.length === 0 || !searchEngines[currentEngine].suggestUrl) {
     suggestionsBox.innerHTML = '';
     suggestionsBox.style.display = 'none';
     searchLoader.style.display = 'none';
@@ -459,27 +546,30 @@ searchInput.addEventListener('input', function() {
 
   debounceTimeout = setTimeout(() => {
     const script = document.createElement('script');
-    // إضافة پاراميتر hl=ar لإجبار جوجل على إرجاع النتائج متوافقة بالكامل مع التوقعات العربية
-    script.src = `https://suggestqueries.google.com/complete/search?client=youtube&hl=ar&q=${encodeURIComponent(inputValue)}&callback=handleGoogleSuggestions`;
+    script.src = `${searchEngines[currentEngine].suggestUrl}${encodeURIComponent(inputValue)}&hl=${currentLang}&callback=handleSuggestions`;
     document.body.appendChild(script);
     document.body.removeChild(script);
   }, 150);
 });
 
-window.handleGoogleSuggestions = function(data) {
+window.handleSuggestions = function(data) {
   searchLoader.style.display = 'none'; 
   suggestionsBox.innerHTML = '';
   
-  if (data && data[1] && data[1].length > 0) {
-    const suggestions = data[1].slice(0, 6);
-    
-    suggestions.forEach(item => {
+  let results = [];
+  if (data && data[1]) {
+    results = data[1].slice(0, 6);
+  }
+  
+  if (results.length > 0) {
+    results.forEach(item => {
+      const term = typeof item === 'string' ? item : item[0];
       const div = document.createElement('div');
       div.className = 'suggestion-item';
-      div.innerText = item[0];
+      div.innerText = term;
       
       div.onclick = () => {
-        searchInput.value = item[0];
+        searchInput.value = term;
         suggestionsBox.style.display = 'none';
         document.querySelector('form').requestSubmit();
       };
@@ -506,15 +596,15 @@ document.querySelector('form').onsubmit = function(e){
       let url = query.startsWith('http') ? query : 'https://' + query;
       navigate(url, 'https://www.google.com/favicon.ico');
     } else {
-      const url = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
+      const url = searchEngines[currentEngine].searchUrl + encodeURIComponent(query);
       navigate(url, 'https://www.google.com/favicon.ico');
     }
   }
 }
 
 window.onload = ()=>{
+  updateLanguage(); 
   navigate('https://www.google.com', 'https://www.google.com/favicon.ico'); 
-  navigate('https://www.wikipedia.org', 'https://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png'); 
 }
 </script>
 
