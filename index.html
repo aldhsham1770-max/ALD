@@ -6,8 +6,15 @@
     <title>ALD Hisham Browser</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f7fa; margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
         .top-toolbar {
             background-color: #ffffff;
             padding: 1vh 2vw;
@@ -18,25 +25,18 @@
             gap: 1.5vw;
             width: 100%;
         }
-
         .browser-title {
             color: #2c3e50;
             font-weight: bold;
             font-size: 2vw;
             white-space: nowrap;
         }
-
-        form {
-            flex: 1;
-            margin: 0 1.5vw;
-        }
-
+        form { flex: 1; margin: 0 1.5vw; }
         .input-group {
             display: flex;
             gap: 1vw;
             width: 100%;
         }
-
         input[type="text"] {
             flex: 1;
             padding: 1vh 1.5vw;
@@ -46,11 +46,9 @@
             outline: none;
             transition: border-color 0.3s;
         }
-
         input[type="text"]:focus {
             border-color: #3498db;
         }
-
         button {
             padding: 1vh 1.5vw;
             background-color: #3498db;
@@ -62,20 +60,15 @@
             white-space: nowrap;
             transition: background-color 0.3s;
         }
-
         button:hover {
             background-color: #2980b9;
         }
-
         .btn-secondary {
             background-color: #7f8c8d;
-            border-radius: 20px;
         }
-
         .btn-secondary:hover {
             background-color: #626b6c;
         }
-
         iframe {
             flex: 1;
             width: 100%;
@@ -86,7 +79,6 @@
     </style>
 </head>
 <body>
-
     <div class="top-toolbar">
         <div class="browser-title">ALD Hisham</div>
         <form>
@@ -95,18 +87,17 @@
                 <button type="submit">بحث</button>
             </div>
         </form>
-        <button type="button" class="btn-secondary" onclick="document.getElementById('content-frame').src='https://www.google.com/search?igu=1';">الصفحة الرئيسية</button>
+        <button type="button" class="btn-secondary" onclick="document.getElementById('content-frame').src='https://duckduckgo.com/'">الصفحة الرئيسية</button>
     </div>
-
-    <iframe id="content-frame" src="https://www.google.com/search?igu=1"></iframe>
-
+    <iframe id="content-frame" src="https://duckduckgo.com/"></iframe>
     <script>
         document.querySelector('form').onsubmit = function(event) {
             event.preventDefault();
             var query = this.elements['q'].value.trim();
-            var searchUrl = 'https://www.google.com/search?igu=1&q=' + encodeURIComponent(query);
+            var searchUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
             document.getElementById('content-frame').src = searchUrl;
         };
     </script>
 </body>
 </html>
+
